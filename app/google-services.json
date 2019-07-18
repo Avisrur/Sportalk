@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "197256534654",
+    "firebase_url": "https://sportalk-66484.firebaseio.com",
+    "project_id": "sportalk-66484",
+    "storage_bucket": "sportalk-66484.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197256534654:android:97f9f271b750e205",
+        "android_client_info": {
+          "package_name": "com.example.sportalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197256534654-ahe20l3e4qt13g0s9qh48ha65nqfsjan.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sportalk",
+            "certificate_hash": "8a6fcc73e9081bed44b476c0ee9c891adc410988"
+          }
+        },
+        {
+          "client_id": "197256534654-4bjcisimrk85jdogeb16ocqmua4kual8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDVwXXmi2V_jHalJVbgfzKkNOi3cto6RM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197256534654-4bjcisimrk85jdogeb16ocqmua4kual8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
