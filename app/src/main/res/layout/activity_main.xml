@@ -19,7 +19,7 @@
         android:id="@+id/addFB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add values"
+        android:text="Add value"
         tools:layout_editor_absoluteX="108dp"
         tools:layout_editor_absoluteY="66dp" />
 
