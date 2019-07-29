@@ -33,21 +33,29 @@
         android:layout_height="67dp"
         android:src="@drawable/logo" />
 
-    <EditText
+    <ProgressBar
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        android:id="@+id/progressBar"/>
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="211dp"
         android:layout_height="60dp"
-        android:hint="@string/username"
-        android:drawableLeft="@drawable/username1"
         android:layout_marginTop="40dp"
-        tools:ignore="MissingConstraints"
-        android:id="@+id/username"/>
+        android:drawableLeft="@drawable/email"
+        android:hint="@string/email"
+        tools:ignore="MissingConstraints" />
+
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:hint="@string/password"
-        android:drawableLeft="@drawable/password"
-        android:layout_marginTop="20dp"
         android:id="@+id/password"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableLeft="@drawable/password"
+        android:hint="@string/password"
         tools:ignore="MissingConstraints" />
 
     <Button

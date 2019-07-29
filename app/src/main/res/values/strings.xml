@@ -9,4 +9,5 @@
     <string name="email">Email</string>
     <string name="back">Back</string>
     <string name="already_register">Already registered?</string>
+    <string name="auth_failed">Auth Failed</string>
 </resources>

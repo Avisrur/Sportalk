@@ -1,9 +1,10 @@
 package com.example.sportalk.activities;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sportalk.R;
 import com.google.firebase.database.DatabaseReference;
@@ -28,16 +29,5 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         },SPLASH_TIME_OUT);
-//        database = FirebaseDatabase.getInstance();
-
-//        Button addFB = findViewById(R.id.addFB);
-//        addFB.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myRef = database.getReference("message"+counter);
-//                myRef.setValue("Hello"+counter);
-//                counter+=1;
-//            }
-//        });
     }
 }
