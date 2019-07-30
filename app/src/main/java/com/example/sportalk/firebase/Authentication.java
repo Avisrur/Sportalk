@@ -17,18 +17,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 public class Authentication {
 
-    DatabaseReference reference;
+    Database database;
+
+    public Authentication() {
+        this.database = new Database();
+    }
 
     public void registerFirebase(final RegisterActivity registerActivity, final FirebaseAuth mAuth, final String email, String password, final String username, final ProgressBar progressBar){
 
@@ -42,12 +41,12 @@ public class Authentication {
                             Toast.makeText(registerActivity, "Registered successfully.",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser currentUser = mAuth.getCurrentUser();
-                            reference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
-                            registerToDatabase(reference,currentUser,email,username);
+                            database.registerUsersToDatabase(currentUser,email,username);
                             Intent registerIntent = new Intent(registerActivity, LoginActivity.class);
                             registerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             registerActivity.startActivity(registerIntent);
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){
@@ -81,9 +80,10 @@ public class Authentication {
                             registerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             loginActivity.startActivity(registerIntent);
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(loginActivity, "Authentication failed.",
+                            Toast.makeText(loginActivity, "User is not registered.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -97,19 +97,5 @@ public class Authentication {
         // [END sign_in_with_email]
     }
 
-    public void registerToDatabase(DatabaseReference reference, FirebaseUser currentUser, String email, String username){
-        Map userToRegister = new HashMap<String,String>();
-        userToRegister.put("id",currentUser.getUid());
-        userToRegister.put("email",email);
-        userToRegister.put("username", username);
-        userToRegister.put("profileImage", "https://firebasestorage.googleapis.com/v0/b/sportalk-66484.appspot.com/o/username.png?alt=media&token=c3e59b7d-fc48-4ef9-99be-5510a6084f11");
-        reference.setValue(userToRegister).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    return;
-                }
-            }
-        });
-    }
+
 }
