@@ -29,9 +29,9 @@ public class Authentication {
         this.database = new Database();
     }
 
-    public void registerFirebase(final RegisterActivity registerActivity, final FirebaseAuth mAuth, final String email, String password, final String username, final ProgressBar progressBar){
+    public void registerFirebase(final RegisterActivity registerActivity, final String email, String password, final String username, final ProgressBar progressBar){
 
-        mAuth.createUserWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(registerActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -40,7 +40,7 @@ public class Authentication {
                             Log.d("register","register");
                             Toast.makeText(registerActivity, "Registered successfully.",
                                     Toast.LENGTH_SHORT).show();
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                             database.registerUsersToDatabase(currentUser,email,username);
                             Intent registerIntent = new Intent(registerActivity, LoginActivity.class);
                             registerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -64,9 +64,9 @@ public class Authentication {
 
     }
 
-    public void loginFirebase(final LoginActivity loginActivity, final FirebaseAuth mAuth, String email, String password, final ProgressBar progressBar){
+    public void loginFirebase(final LoginActivity loginActivity, String email, String password, final ProgressBar progressBar){
         Log.d("login","login");
-        mAuth.signInWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(loginActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -74,7 +74,7 @@ public class Authentication {
                             // Sign in success, update UI with the signed-in user's information
                             progressBar.setVisibility(View.GONE);
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             Log.d("login", String.valueOf(user));
                             Intent registerIntent = new Intent(loginActivity, HomeActivity.class);
                             registerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -95,6 +95,10 @@ public class Authentication {
                     }
                 });
         // [END sign_in_with_email]
+    }
+
+    public String getCurrentUserId(){
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 

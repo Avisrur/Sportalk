@@ -17,14 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sportalk.R;
+import com.example.sportalk.firebase.Authentication;
+import com.example.sportalk.firebase.Database;
+import com.example.sportalk.firebase.Storage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -38,9 +38,19 @@ public class PostActivity extends AppCompatActivity {
     StorageTask uploadTask;
     StorageReference storageReference;
 
+    Database database;
+    Storage storage;
+    Authentication authentication;
+
     ImageView close,image_added;
     TextView post;
     EditText description;
+
+    public PostActivity() {
+        database = new Database();
+        storage = new Storage();
+        authentication = new Authentication();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +62,11 @@ public class PostActivity extends AppCompatActivity {
         post = findViewById(R.id.post);
         description = findViewById(R.id.description);
 
-        storageReference = FirebaseStorage.getInstance().getReference("posts");
+        database = new Database();
+        storage = new Storage();
+        authentication = new Authentication();
+
+        storageReference = storage.getPostsStorage();
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +121,7 @@ public class PostActivity extends AppCompatActivity {
                         Uri downloadUri = task.getResult();
                         myUrl = downloadUri.toString();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+                        DatabaseReference reference = database.getPostsDB();
 
                         String postId = reference.push().getKey();
 
@@ -116,7 +130,7 @@ public class PostActivity extends AppCompatActivity {
                         hashMap.put("postId", postId);
                         hashMap.put("postImage", myUrl);
                         hashMap.put("description", description.getText().toString());
-                        hashMap.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        hashMap.put("publisher", authentication.getCurrentUserId());
 
                         reference.child(postId).setValue(hashMap);
 

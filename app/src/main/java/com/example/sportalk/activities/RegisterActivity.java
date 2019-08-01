@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sportalk.R;
 import com.example.sportalk.firebase.Authentication;
 import com.example.sportalk.utils.Validator;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText username;
@@ -24,7 +23,6 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Authentication firebaseAuth;
     Validator validator;
-    private FirebaseAuth mAuth;
 
     public RegisterActivity() {
         this.firebaseAuth = new Authentication();
@@ -43,7 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         alreadyRegisteredTextView = (TextView) findViewById(R.id.already_registered);
 
-        mAuth = FirebaseAuth.getInstance();
+        this.firebaseAuth = new Authentication();
+        this.validator = new Validator();
 
         alreadyRegisteredTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(validateRegister()){
                     progressBar.setVisibility(View.VISIBLE);
-                    firebaseAuth.registerFirebase(RegisterActivity.this,mAuth,email.getText().toString(),password.getText().toString(),username.getText().toString(),progressBar);
+                    firebaseAuth.registerFirebase(RegisterActivity.this,email.getText().toString(),password.getText().toString(),username.getText().toString(),progressBar);
                 }
             }
         });

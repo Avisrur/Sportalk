@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sportalk.R;
 import com.example.sportalk.adapters.UserAdapter;
 import com.example.sportalk.entities.User;
+import com.example.sportalk.firebase.Database;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -32,13 +32,20 @@ public class SearchFragment extends Fragment {
     private UserAdapter userAdapter;
     private List<User> mUsers;
 
+    private Database database;
+
     EditText search_bar;
+
+    public SearchFragment() {
+        database = new Database();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
+        database = new Database();
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -71,7 +78,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void searchUsers(String s){
-        Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("username").startAt(s).endAt(s+"\uf8ff");
+        Query query = database.queryUsernameInUsersDB(s);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -94,7 +101,7 @@ public class SearchFragment extends Fragment {
 
     private void readUsers(){
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference reference = database.getUsersDB();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

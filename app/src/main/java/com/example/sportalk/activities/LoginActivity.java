@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sportalk.R;
 import com.example.sportalk.firebase.Authentication;
 import com.example.sportalk.utils.Validator;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     EditText email;
@@ -23,7 +22,6 @@ public class LoginActivity extends AppCompatActivity {
     Authentication firebaseAuth;
     Validator validator;
     ProgressBar progressBar;
-    private FirebaseAuth mAuth;
 
     public LoginActivity() {
         this.firebaseAuth = new Authentication();
@@ -41,7 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         registerTextView = (TextView) findViewById(R.id.registerTxt);
 
-        mAuth = FirebaseAuth.getInstance();
+        this.firebaseAuth = new Authentication();
+        this.validator = new Validator();
 
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateLogin()) {
                     progressBar.setVisibility(View.VISIBLE);
-                    firebaseAuth.loginFirebase(LoginActivity.this,mAuth,email.getText().toString(),password.getText().toString(),progressBar);
+                    firebaseAuth.loginFirebase(LoginActivity.this,email.getText().toString(),password.getText().toString(),progressBar);
                 }
             }
         });
