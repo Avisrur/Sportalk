@@ -2,6 +2,7 @@ package com.example.sportalk.firebase;
 
 import androidx.annotation.NonNull;
 
+import com.example.sportalk.entities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,5 +30,24 @@ public class Database {
                 }
             }
         });
+    }
+
+    public void setFollow(FirebaseUser firebaseUser, User user){
+        FirebaseDatabase.getInstance().getReference().child("follow").child(firebaseUser.getUid())
+                .child("following").child(user.getId()).setValue(true);
+        FirebaseDatabase.getInstance().getReference().child("follow").child(user.getId())
+                .child("followers").child(firebaseUser.getUid()).setValue(true);
+    }
+
+    public void setUnfollow(FirebaseUser firebaseUser, User user){
+        FirebaseDatabase.getInstance().getReference().child("follow").child(firebaseUser.getUid())
+                .child("following").child(user.getId()).setValue(true);
+        FirebaseDatabase.getInstance().getReference().child("follow").child(user.getId())
+                .child("followers").child(firebaseUser.getUid()).setValue(true);
+    }
+
+    public DatabaseReference getUserFollowers(FirebaseUser firebaseUser) {
+        return FirebaseDatabase.getInstance().getReference()
+                .child("follow").child(firebaseUser.getUid()).child("following");
     }
 }
