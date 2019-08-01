@@ -14,12 +14,12 @@ import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
 import com.example.sportalk.entities.Post;
 import com.example.sportalk.entities.User;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.sportalk.firebase.Authentication;
+import com.example.sportalk.firebase.Database;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
@@ -29,11 +29,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public Context mContext;
     public List<Post> mPost;
 
+    private Authentication authentication;
+    private Database database;
+
     private FirebaseUser firebaseUser;
 
     public PostAdapter(Context mContext, List<Post> mPost) {
         this.mContext = mContext;
         this.mPost = mPost;
+        authentication = new Authentication();
+        database = new Database();
     }
 
     @NonNull
@@ -45,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = authentication.getCurrentUser();
         Post post = mPost.get(position);
 
         Glide.with(mContext).load(post.getPostImage()).into(holder.post_image);
@@ -87,7 +92,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     private void publisherInfo(final ImageView image_profile, final TextView username, final TextView publisher, String userId){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        DatabaseReference reference = database.getUserById(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

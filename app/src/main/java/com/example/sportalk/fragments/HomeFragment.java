@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sportalk.R;
 import com.example.sportalk.adapters.PostAdapter;
 import com.example.sportalk.entities.Post;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.sportalk.firebase.Authentication;
+import com.example.sportalk.firebase.Database;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -31,11 +31,21 @@ public class HomeFragment extends Fragment {
 
     private List<String> followingList;
 
+    private Authentication authentication;
+    private Database database;
+
+    public HomeFragment() {
+        authentication = new Authentication();
+        database = new Database();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
         recyclerView = view.findViewById(R.id.recycler_view);
+        authentication = new Authentication();
+        database = new Database();
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
@@ -53,9 +63,7 @@ public class HomeFragment extends Fragment {
     private void checkFollowing(){
         followingList = new ArrayList<>();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("follow")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("following");
+        DatabaseReference reference = database.getFollowersByUserId(authentication.getCurrentUserId());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,7 +85,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void readPosts(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("posts");
+        DatabaseReference reference = database.getPostsDB();
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override

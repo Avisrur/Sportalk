@@ -97,6 +97,10 @@ public class Authentication {
         // [END sign_in_with_email]
     }
 
+    public FirebaseUser getCurrentUser(){
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
     public String getCurrentUserId(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }

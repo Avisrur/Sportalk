@@ -63,4 +63,14 @@ public class Database {
     public DatabaseReference getPostsDB() {
         return FirebaseDatabase.getInstance().getReference("posts");
     }
+
+    public DatabaseReference getFollowersByUserId(String currentUserId) {
+        return FirebaseDatabase.getInstance().getReference("follow")
+                .child(currentUserId)
+                .child("following");
+    }
+
+    public DatabaseReference getUserById(String userId) {
+        return FirebaseDatabase.getInstance().getReference("users").child(userId);
+    }
 }
