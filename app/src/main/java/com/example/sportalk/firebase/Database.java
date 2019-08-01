@@ -73,4 +73,21 @@ public class Database {
     public DatabaseReference getUserById(String userId) {
         return FirebaseDatabase.getInstance().getReference("users").child(userId);
     }
+
+    public DatabaseReference getLikesByPostId(String postId) {
+        return FirebaseDatabase.getInstance().getReference("likes").child(postId);
+    }
+
+    public DatabaseReference getCommentsByPostId(String postId) {
+        return FirebaseDatabase.getInstance().getReference("comments").child(postId);
+    }
+
+    public void likePostForUserById(String postId, String uid) {
+        FirebaseDatabase.getInstance().getReference().child("likes").child(postId).child(uid).setValue(true);
+    }
+
+    public void unlikePostForUserById(String postId, String uid) {
+        FirebaseDatabase.getInstance().getReference().child("likes").child(postId).child(uid).removeValue();
+
+    }
 }
