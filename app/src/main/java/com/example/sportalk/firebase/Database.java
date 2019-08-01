@@ -50,9 +50,9 @@ public class Database {
 
     public void setUnfollow(FirebaseUser firebaseUser, User user){
         FirebaseDatabase.getInstance().getReference().child("follow").child(firebaseUser.getUid())
-                .child("following").child(user.getId()).setValue(true);
+                .child("following").child(user.getId()).removeValue();
         FirebaseDatabase.getInstance().getReference().child("follow").child(user.getId())
-                .child("followers").child(firebaseUser.getUid()).setValue(true);
+                .child("followers").child(firebaseUser.getUid()).removeValue();
     }
 
     public DatabaseReference getUserFollowers(FirebaseUser firebaseUser) {
@@ -62,5 +62,32 @@ public class Database {
 
     public DatabaseReference getPostsDB() {
         return FirebaseDatabase.getInstance().getReference("posts");
+    }
+
+    public DatabaseReference getFollowersByUserId(String currentUserId) {
+        return FirebaseDatabase.getInstance().getReference("follow")
+                .child(currentUserId)
+                .child("following");
+    }
+
+    public DatabaseReference getUserById(String userId) {
+        return FirebaseDatabase.getInstance().getReference("users").child(userId);
+    }
+
+    public DatabaseReference getLikesByPostId(String postId) {
+        return FirebaseDatabase.getInstance().getReference("likes").child(postId);
+    }
+
+    public DatabaseReference getCommentsByPostId(String postId) {
+        return FirebaseDatabase.getInstance().getReference("comments").child(postId);
+    }
+
+    public void likePostForUserById(String postId, String uid) {
+        FirebaseDatabase.getInstance().getReference().child("likes").child(postId).child(uid).setValue(true);
+    }
+
+    public void unlikePostForUserById(String postId, String uid) {
+        FirebaseDatabase.getInstance().getReference().child("likes").child(postId).child(uid).removeValue();
+
     }
 }

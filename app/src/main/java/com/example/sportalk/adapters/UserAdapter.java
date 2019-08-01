@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
 import com.example.sportalk.entities.User;
+import com.example.sportalk.firebase.Authentication;
 import com.example.sportalk.firebase.Database;
 import com.example.sportalk.fragments.ProfileFragment;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,11 +36,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private FirebaseUser firebaseUser;
 
     private Database database;
+    private Authentication authentication;
 
     public UserAdapter(Context mContext, List<User> mUsers) {
         this.mContext = mContext;
         this.mUsers = mUsers;
         this.database = new Database();
+        this.authentication = new Authentication();
     }
 
     @NonNull
@@ -53,7 +55,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = authentication.getCurrentUser();
 
         final User user = mUsers.get(position);
 
