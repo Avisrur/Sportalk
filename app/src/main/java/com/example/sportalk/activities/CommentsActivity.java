@@ -109,7 +109,20 @@ public class CommentsActivity extends AppCompatActivity {
         hashMap.put("publisher", firebaseUser.getUid());
 
         reference.push().setValue(hashMap);
+        addNotifications();
         add_comment.setText("");
+    }
+
+    private void addNotifications(){
+        DatabaseReference reference = database.getNotificationByUserId(publisherId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "commented: "+add_comment.getText().toString());
+        hashMap.put("postId", postId);
+        hashMap.put("isPost",true);
+
+        reference.push().setValue(hashMap);
     }
 
     private void getImage(){

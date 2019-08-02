@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
 import com.example.sportalk.activities.CommentsActivity;
-import com.example.sportalk.activities.HomeActivity;
 import com.example.sportalk.entities.Post;
 import com.example.sportalk.entities.User;
 import com.example.sportalk.firebase.Authentication;
 import com.example.sportalk.firebase.Database;
-import com.example.sportalk.fragments.PostDetailFragment;
 import com.example.sportalk.fragments.ProfileFragment;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
@@ -108,17 +107,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.post_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit();
-                editor.putString("postId",post.getPostId());
-                editor.apply();
-
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new PostDetailFragment()).commit();
-            }
-        });
-
         holder.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +123,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             public void onClick(View v) {
                 if(holder.like.getTag().equals("like")){
                     database.likePostForUserById(post.getPostId(),firebaseUser.getUid());
+                    addNotifications(post.getPublisher(),post.getPostId());
                 } else {
                     database.unlikePostForUserById(post.getPostId(),firebaseUser.getUid());
                 }
@@ -161,14 +150,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.image_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                intent.putExtra("publisherId",post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -235,6 +216,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             }
         });
+    }
+
+    private void addNotifications(String userId, String postId){
+        DatabaseReference reference = database.getNotificationByUserId(userId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "liked your post");
+        hashMap.put("postId", postId);
+        hashMap.put("isPost",true);
+
+        reference.push().setValue(hashMap);
     }
 
     private void nrLikes(final TextView likes, String postId){

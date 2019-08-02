@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
@@ -116,6 +117,7 @@ public class ProfileFragment extends Fragment {
                     //go to Edit profile
                 } else if (btn.equals("follow")) {
                     database.setFollow(firebaseUser.getUid(),profileId);
+                    addNotifications();
                 } else if (btn.equals("following")) {
                     database.setUnfollow(firebaseUser.getUid(),profileId);
                 }
@@ -163,6 +165,18 @@ public class ProfileFragment extends Fragment {
         postList = new ArrayList<>();
         myFotosAdapter = new MyFotosAdapter(getContext(),postList);
         recyclerView.setAdapter(myFotosAdapter);
+    }
+
+    private void addNotifications(){
+        DatabaseReference reference = database.getNotificationByUserId(profileId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "started following you");
+        hashMap.put("postId", "");
+        hashMap.put("isPost",false);
+
+        reference.push().setValue(hashMap);
     }
 
     private void userInfo(){

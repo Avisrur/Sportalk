@@ -110,4 +110,8 @@ public class Database {
     public DatabaseReference getPostById(String postId) {
         return FirebaseDatabase.getInstance().getReference("posts").child(postId);
     }
+
+    public DatabaseReference getNotificationByUserId(String uid) {
+        return FirebaseDatabase.getInstance().getReference("notifications").child(uid);
+    }
 }
