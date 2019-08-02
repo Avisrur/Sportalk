@@ -45,16 +45,9 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        database = new Database();
-        recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        initRecyclerView(view);
 
         search_bar = view.findViewById(R.id.search_bar);
-
-        mUsers = new ArrayList<>();
-        userAdapter = new UserAdapter(getContext(),mUsers);
-        recyclerView.setAdapter(userAdapter);
 
         readUsers();
         search_bar.addTextChangedListener(new TextWatcher() {
@@ -75,6 +68,15 @@ public class SearchFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void initRecyclerView(View view) {
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mUsers = new ArrayList<>();
+        userAdapter = new UserAdapter(getContext(),mUsers);
+        recyclerView.setAdapter(userAdapter);
     }
 
     private void searchUsers(String s){
