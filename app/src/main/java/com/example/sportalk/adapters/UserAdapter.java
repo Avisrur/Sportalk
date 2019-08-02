@@ -73,7 +73,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("profileid",user.getId());
+                editor.putString("profileId",user.getId());
                 editor.apply();
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -85,9 +85,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 if(holder.btnFollow.getText().toString().equals("follow")){
-                    database.setFollow(firebaseUser,user);
+                    database.setFollow(firebaseUser.getUid(),user.getId());
                 } else {
-                    database.setUnfollow(firebaseUser,user);
+                    database.setUnfollow(firebaseUser.getUid(),user.getId());
                 }
             }
         });

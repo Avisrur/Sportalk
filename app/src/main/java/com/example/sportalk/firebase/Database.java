@@ -2,7 +2,6 @@ package com.example.sportalk.firebase;
 
 import androidx.annotation.NonNull;
 
-import com.example.sportalk.entities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,18 +40,18 @@ public class Database {
         return FirebaseDatabase.getInstance().getReference("users").orderByChild("username").startAt(s).endAt(s+"\uf8ff");
     }
 
-    public void setFollow(FirebaseUser firebaseUser, User user){
-        FirebaseDatabase.getInstance().getReference().child("follow").child(firebaseUser.getUid())
-                .child("following").child(user.getId()).setValue(true);
-        FirebaseDatabase.getInstance().getReference().child("follow").child(user.getId())
-                .child("followers").child(firebaseUser.getUid()).setValue(true);
+    public void setFollow(String userId, String userIdToFollow){
+        FirebaseDatabase.getInstance().getReference().child("follow").child(userId)
+                .child("following").child(userIdToFollow).setValue(true);
+        FirebaseDatabase.getInstance().getReference().child("follow").child(userIdToFollow)
+                .child("followers").child(userId).setValue(true);
     }
 
-    public void setUnfollow(FirebaseUser firebaseUser, User user){
-        FirebaseDatabase.getInstance().getReference().child("follow").child(firebaseUser.getUid())
-                .child("following").child(user.getId()).removeValue();
-        FirebaseDatabase.getInstance().getReference().child("follow").child(user.getId())
-                .child("followers").child(firebaseUser.getUid()).removeValue();
+    public void setUnfollow(String userId, String userIdToFollow){
+        FirebaseDatabase.getInstance().getReference().child("follow").child(userId)
+                .child("following").child(userIdToFollow).removeValue();
+        FirebaseDatabase.getInstance().getReference().child("follow").child(userIdToFollow)
+                .child("followers").child(userId).removeValue();
     }
 
     public DatabaseReference getUserFollowers(FirebaseUser firebaseUser) {
@@ -64,10 +63,16 @@ public class Database {
         return FirebaseDatabase.getInstance().getReference("posts");
     }
 
-    public DatabaseReference getFollowersByUserId(String currentUserId) {
+    public DatabaseReference getFollowingsByUserId(String currentUserId) {
         return FirebaseDatabase.getInstance().getReference("follow")
                 .child(currentUserId)
                 .child("following");
+    }
+
+    public DatabaseReference getFollowersByUserId(String currentUserId) {
+        return FirebaseDatabase.getInstance().getReference("follow")
+                .child(currentUserId)
+                .child("followers");
     }
 
     public DatabaseReference getUserById(String userId) {
@@ -88,6 +93,21 @@ public class Database {
 
     public void unlikePostForUserById(String postId, String uid) {
         FirebaseDatabase.getInstance().getReference().child("likes").child(postId).child(uid).removeValue();
+    }
 
+    public void savePostForUserId(String uid, String postId) {
+        FirebaseDatabase.getInstance().getReference().child("saves").child(uid).child(postId).setValue(true);
+    }
+
+    public void unsavePostForUserId(String uid, String postId) {
+        FirebaseDatabase.getInstance().getReference().child("saves").child(uid).child(postId).removeValue();
+    }
+
+    public DatabaseReference getSavedPostByUserId(String uid) {
+        return FirebaseDatabase.getInstance().getReference().child("saves").child(uid);
+    }
+
+    public DatabaseReference getPostById(String postId) {
+        return FirebaseDatabase.getInstance().getReference("posts").child(postId);
     }
 }

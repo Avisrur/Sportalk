@@ -43,9 +43,15 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home,container,false);
+        initRecyclerView(view);
+
+        checkFollowing();
+
+        return view;
+    }
+
+    private void initRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view);
-        authentication = new Authentication();
-        database = new Database();
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
@@ -54,16 +60,12 @@ public class HomeFragment extends Fragment {
         postLists = new ArrayList<>();
         postAdapter = new PostAdapter(getContext(),postLists);
         recyclerView.setAdapter(postAdapter);
-
-        checkFollowing();
-
-        return view;
     }
 
     private void checkFollowing(){
         followingList = new ArrayList<>();
 
-        DatabaseReference reference = database.getFollowersByUserId(authentication.getCurrentUserId());
+        DatabaseReference reference = database.getFollowingsByUserId(authentication.getCurrentUserId());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
