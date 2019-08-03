@@ -9,28 +9,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="10dp"
-                android:id="@+id/image_profile"/>
+                android:layout_margin="10dp" />
 
             <TextView
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/username"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@id/image_profile"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"/>
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"/>
+                android:textStyle="bold" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/delete_post"
+                android:layout_width="52dp"
+                android:layout_height="43dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_delete" />
+
+        </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"

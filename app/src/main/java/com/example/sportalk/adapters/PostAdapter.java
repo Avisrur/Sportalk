@@ -1,6 +1,8 @@
 package com.example.sportalk.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -16,12 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
 import com.example.sportalk.activities.CommentsActivity;
-import com.example.sportalk.activities.HomeActivity;
 import com.example.sportalk.entities.Post;
 import com.example.sportalk.entities.User;
 import com.example.sportalk.firebase.Authentication;
 import com.example.sportalk.firebase.Database;
-import com.example.sportalk.fragments.PostDetailFragment;
 import com.example.sportalk.fragments.ProfileFragment;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
@@ -67,6 +68,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         } else {
             holder.description.setVisibility(View.VISIBLE);
             holder.description.setText(post.getDescription());
+        }
+
+        if(post.getPublisher().equals(firebaseUser.getUid())){
+            holder.delete_post.setVisibility(View.VISIBLE);
+        } else {
+            holder.delete_post.setVisibility(View.GONE);
         }
 
         publisherInfo(holder.image_profile,holder.username,holder.publisher,post.getPublisher());
@@ -108,17 +115,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.post_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit();
-                editor.putString("postId",post.getPostId());
-                editor.apply();
-
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new PostDetailFragment()).commit();
-            }
-        });
-
         holder.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,11 +126,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
+        holder.delete_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new AlertDialog.Builder(mContext)
+                        .setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deletePost(post);
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.like.getTag().equals("like")){
                     database.likePostForUserById(post.getPostId(),firebaseUser.getUid());
+                    addNotifications(post.getPublisher(),post.getPostId());
                 } else {
                     database.unlikePostForUserById(post.getPostId(),firebaseUser.getUid());
                 }
@@ -161,14 +181,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-        holder.image_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                intent.putExtra("publisherId",post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -178,7 +190,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView image_profile, post_image, like, comment, save;
+        public ImageView image_profile, post_image, like, comment, save, delete_post;
         public TextView username, likes, publisher, description, comments;
 
         public ViewHolder(@NonNull View itemView){
@@ -194,6 +206,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             publisher = itemView.findViewById(R.id.publisher);
             description = itemView.findViewById(R.id.description);
             comments = itemView.findViewById(R.id.comments);
+            delete_post = itemView.findViewById(R.id.delete_post);
         }
     }
 
@@ -235,6 +248,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             }
         });
+    }
+
+    private void addNotifications(String userId, String postId){
+        DatabaseReference reference = database.getNotificationByUserId(userId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "liked your post");
+        hashMap.put("postId", postId);
+        hashMap.put("isPost",true);
+
+        reference.push().setValue(hashMap);
     }
 
     private void nrLikes(final TextView likes, String postId){
@@ -293,5 +318,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
+    }
+
+    private void deletePost(Post post) {
+        database.deletePostById(post.getPostId());
+        SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit();
+        editor.putString("profileId",authentication.getCurrentUserId());
+        editor.apply();
+
+        ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ProfileFragment()).commit();
     }
 }

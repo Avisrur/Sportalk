@@ -31,6 +31,16 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"/>
     </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/top_search"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:paddingTop="10dp"
+            android:text="Most Searched Pages"
+            android:textAlignment="center"
+            android:visibility="gone" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

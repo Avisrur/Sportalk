@@ -1,6 +1,7 @@
 package com.example.sportalk.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
+import com.example.sportalk.activities.ImageProfileActivity;
 import com.example.sportalk.adapters.MyFotosAdapter;
 import com.example.sportalk.entities.Post;
 import com.example.sportalk.entities.User;
@@ -33,7 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
@@ -107,6 +111,17 @@ public class ProfileFragment extends Fragment {
             saved_fotos.setVisibility(View.GONE);
         }
 
+        if(profileId.equals(firebaseUser.getUid())){
+            image_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(), ImageProfileActivity.class);
+                    startActivity(i);
+                    Objects.requireNonNull(getActivity()).overridePendingTransition(0, 0);
+                }
+            });
+        }
+
         edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +131,7 @@ public class ProfileFragment extends Fragment {
                     //go to Edit profile
                 } else if (btn.equals("follow")) {
                     database.setFollow(firebaseUser.getUid(),profileId);
+                    addNotifications();
                 } else if (btn.equals("following")) {
                     database.setUnfollow(firebaseUser.getUid(),profileId);
                 }
@@ -163,6 +179,18 @@ public class ProfileFragment extends Fragment {
         postList = new ArrayList<>();
         myFotosAdapter = new MyFotosAdapter(getContext(),postList);
         recyclerView.setAdapter(myFotosAdapter);
+    }
+
+    private void addNotifications(){
+        DatabaseReference reference = database.getNotificationByUserId(profileId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "started following you");
+        hashMap.put("postId", "");
+        hashMap.put("isPost",false);
+
+        reference.push().setValue(hashMap);
     }
 
     private void userInfo(){

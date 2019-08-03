@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -86,11 +87,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onClick(View v) {
                 if(holder.btnFollow.getText().toString().equals("follow")){
                     database.setFollow(firebaseUser.getUid(),user.getId());
+                    addNotifications(user.getId());
                 } else {
                     database.setUnfollow(firebaseUser.getUid(),user.getId());
                 }
             }
         });
+    }
+
+    private void addNotifications(String userId){
+        DatabaseReference reference = database.getNotificationByUserId(userId);
+        HashMap<String,Object> hashMap = new HashMap<>();
+
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("text", "started following you");
+        hashMap.put("postId", "");
+        hashMap.put("isPost",false);
+
+        reference.push().setValue(hashMap);
     }
 
     @Override

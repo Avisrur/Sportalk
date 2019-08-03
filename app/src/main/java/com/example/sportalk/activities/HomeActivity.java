@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.sportalk.R;
-import com.example.sportalk.fragments.FavoriteFragment;
 import com.example.sportalk.fragments.HomeFragment;
+import com.example.sportalk.fragments.NotificationFragment;
 import com.example.sportalk.fragments.ProfileFragment;
 import com.example.sportalk.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,10 +39,10 @@ public class HomeActivity extends AppCompatActivity {
             editor.apply();
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ProfileFragment()).commit();
+                    new ProfileFragment(),"profile").commit();
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+                    new HomeFragment(),"home").commit();
         }
 
     }
@@ -62,8 +62,8 @@ public class HomeActivity extends AppCompatActivity {
                             selectedFragment = null;
                             startActivity(new Intent(HomeActivity.this, PostActivity.class));
                             break;
-                        case R.id.nav_favorite:
-                            selectedFragment = new FavoriteFragment();
+                        case R.id.nav_notification:
+                            selectedFragment = new NotificationFragment();
                             break;
                         case R.id.nav_profile:
                             SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();

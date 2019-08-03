@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ public class SearchFragment extends Fragment {
     private Database database;
 
     EditText search_bar;
+    TextView top_search;
 
     public SearchFragment() {
         database = new Database();
@@ -48,6 +50,7 @@ public class SearchFragment extends Fragment {
         initRecyclerView(view);
 
         search_bar = view.findViewById(R.id.search_bar);
+        top_search = view.findViewById(R.id.top_search);
 
         readUsers();
         search_bar.addTextChangedListener(new TextWatcher() {
@@ -58,6 +61,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                top_search.setVisibility(View.GONE);
                 searchUsers(s.toString().toLowerCase());
             }
 
@@ -79,7 +83,7 @@ public class SearchFragment extends Fragment {
         recyclerView.setAdapter(userAdapter);
     }
 
-    private void searchUsers(String s){
+    private void searchUsers(final String s){
         Query query = database.queryUsernameInUsersDB(s);
 
         query.addValueEventListener(new ValueEventListener() {
@@ -88,7 +92,12 @@ public class SearchFragment extends Fragment {
                 mUsers.clear();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-                    mUsers.add(user);
+                    if(s.equals("") && user.isNews()){
+                        top_search.setVisibility(View.VISIBLE);
+                        mUsers.add(user);
+                    } else if(!s.equals("")) {
+                        mUsers.add(user);
+                    }
                 }
 
                 userAdapter.notifyDataSetChanged();
@@ -111,7 +120,10 @@ public class SearchFragment extends Fragment {
                     mUsers.clear();
                     for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                         User user = snapshot.getValue(User.class);
-                        mUsers.add(user);
+                        if(user.isNews()) {
+                            mUsers.add(user);
+                            top_search.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     userAdapter.notifyDataSetChanged();

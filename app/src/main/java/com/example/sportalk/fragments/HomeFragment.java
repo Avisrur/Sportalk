@@ -100,6 +100,9 @@ public class HomeFragment extends Fragment {
                             postLists.add(post);
                         }
                     }
+                    if(post.getPublisher().equals(authentication.getCurrentUserId())){
+                        postLists.add(post);
+                    }
                 }
                 postAdapter.notifyDataSetChanged();
             }

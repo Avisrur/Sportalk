@@ -7,12 +7,14 @@ public class User {
     private String username;
     private String email;
     private String profileImage;
+    private boolean news;
 
-    public User(String id, String username, String email, String profileImage) {
+    public User(String id, String username, String email, String profileImage, boolean news) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.profileImage = profileImage;
+        this.news = news;
     }
 
     public User() {
@@ -23,6 +25,11 @@ public class User {
         this.username = username;
         this.email = email;
     }
+
+    public boolean isNews() {
+        return news;
+    }
+
 
     public String getId() {
         return id;
@@ -50,6 +57,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setNews(boolean news) {
+        this.news = news;
     }
 
     public void setProfileImage(String profileImage) {
