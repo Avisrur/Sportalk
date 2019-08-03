@@ -1,6 +1,8 @@
 package com.example.sportalk.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -68,6 +70,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.description.setText(post.getDescription());
         }
 
+        if(post.getPublisher().equals(firebaseUser.getUid())){
+            holder.delete_post.setVisibility(View.VISIBLE);
+        } else {
+            holder.delete_post.setVisibility(View.GONE);
+        }
+
         publisherInfo(holder.image_profile,holder.username,holder.publisher,post.getPublisher());
         isLiked(post.getPostId(), holder.like);
         nrLikes(holder.likes, post.getPostId());
@@ -118,6 +126,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
+        holder.delete_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new AlertDialog.Builder(mContext)
+                        .setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deletePost(post);
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +190,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView image_profile, post_image, like, comment, save;
+        public ImageView image_profile, post_image, like, comment, save, delete_post;
         public TextView username, likes, publisher, description, comments;
 
         public ViewHolder(@NonNull View itemView){
@@ -175,6 +206,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             publisher = itemView.findViewById(R.id.publisher);
             description = itemView.findViewById(R.id.description);
             comments = itemView.findViewById(R.id.comments);
+            delete_post = itemView.findViewById(R.id.delete_post);
         }
     }
 
@@ -286,5 +318,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
+    }
+
+    private void deletePost(Post post) {
+        database.deletePostById(post.getPostId());
+        SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS",Context.MODE_PRIVATE).edit();
+        editor.putString("profileId",authentication.getCurrentUserId());
+        editor.apply();
+
+        ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ProfileFragment()).commit();
     }
 }

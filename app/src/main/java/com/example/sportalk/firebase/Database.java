@@ -114,4 +114,9 @@ public class Database {
     public DatabaseReference getNotificationByUserId(String uid) {
         return FirebaseDatabase.getInstance().getReference("notifications").child(uid);
     }
+
+    public void deletePostById(String postId) {
+        DatabaseReference post = FirebaseDatabase.getInstance().getReference("posts").child(postId);
+        post.removeValue();
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.sportalk.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sportalk.R;
+import com.example.sportalk.activities.ImageProfileActivity;
 import com.example.sportalk.adapters.MyFotosAdapter;
 import com.example.sportalk.entities.Post;
 import com.example.sportalk.entities.User;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
@@ -106,6 +109,17 @@ public class ProfileFragment extends Fragment {
             edit_profile.setVisibility(View.VISIBLE);
             checkFollow();
             saved_fotos.setVisibility(View.GONE);
+        }
+
+        if(profileId.equals(firebaseUser.getUid())){
+            image_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(), ImageProfileActivity.class);
+                    startActivity(i);
+                    Objects.requireNonNull(getActivity()).overridePendingTransition(0, 0);
+                }
+            });
         }
 
         edit_profile.setOnClickListener(new View.OnClickListener() {

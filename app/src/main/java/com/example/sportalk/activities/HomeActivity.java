@@ -39,10 +39,10 @@ public class HomeActivity extends AppCompatActivity {
             editor.apply();
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ProfileFragment()).commit();
+                    new ProfileFragment(),"profile").commit();
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+                    new HomeFragment(),"home").commit();
         }
 
     }
