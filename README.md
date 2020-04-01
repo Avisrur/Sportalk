@@ -1,4 +1,4 @@
 # Sportalk
 School serverless Android app project
 
-Instegram-like application for sports fans to talk about sport releated stories and discuss them
+Instegram-like application for sports fans to talk about sport related stories and discuss them
